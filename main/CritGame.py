@@ -133,9 +133,9 @@ while 1 == 1:
         PlayerInput = ("")
     elif PlayerInput == "store":
         StoreCall()
-    elif:
-        print("jern")
-        Buy()
+    # elif:
+    #     print("jern")
+    #     Buy()
     else:
         if RandomInt >= 8:
             time.sleep(0.5)

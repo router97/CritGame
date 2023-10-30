@@ -3,9 +3,11 @@
 import random
 import time
 import json
-with open("data/enemy.json", "r") as fl:
+with open("main/data/enemy.json", "r") as fl:
     # Load the JSON data into a dictionary
-    enemies = json.load(fl)
+    json_enemies = json.load(fl)
+
+enemies = {int(key): value for key, value in json_enemies.items()} # Converting enemy index into an integer
 
 enemy_counter = 1
 def Intro():
@@ -48,14 +50,11 @@ def counter_attack(player_health, enemy_damage):
 # Functions to handle round progression
 def win(enemy_counter, enemy_health, enemy_damage, player_money, enemies):
     """Updates enemy stats with the next enemy's stats, if current enemy's health reaches 0 and it isn't the last enemy"""
-    if enemy_counter <= len(enemies):
-        enemy_stats = enemies[enemy_counter]
-        enemy_counter += 1
-        enemy_health, enemy_damage, reward = enemy_stats["health"], enemy_stats["damage"], enemy_stats["reward"]
-        player_money += reward
-    else: 
-        return False # indicates that the game should stop
-    return enemy_counter, enemy_health,  enemy_damage, player_money
+    enemy_stats = enemies[enemy_counter]
+    enemy_counter += 1
+    enemy_health, enemy_damage, reward = enemy_stats["health"], enemy_stats["damage"], enemy_stats["reward"]
+    player_money += reward
+    return enemy_counter, enemy_health, enemy_damage, player_money
 
 def lose_check(player_health):
     """Returns True if the player's health reaches 0"""
@@ -88,8 +87,6 @@ while playing:
         playing = False
     elif enemy_health <= 0:
         print(" --- You win! ---")
-        result = win(enemy_counter, enemy_health, enemy_damage, player_money, enemies)
-        if result is False:
+        enemy_counter, enemy_health, enemy_damage, player_money = win(enemy_counter, enemy_health, enemy_damage, player_money, enemies)
+        if enemy_counter > len(enemies):
             playing = False
-        else:
-            enemy_counter, enemy_health, enemy_damage, player_money = result

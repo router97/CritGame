@@ -7,23 +7,23 @@ path = "main/data/enemy.json"
 json_dict = {
     1: {
     "name": "Zevaka",
-    "health": 2,
-    "damage": 40,
-    "reward": 100
+    "health": 1,
+    "damage": 1,
+    "reward": 1
     }
     ,
     2: {
     "name": "Gleb",
-    "health": 4,
-    "damage": 60,
-    "reward": 250
+    "health": 1,
+    "damage": 1,
+    "reward": 1
     }
     ,
     3: {
     "name": "MAKAROV",
-    "health": 10,
-    "damage": 99,
-    "reward": 1000
+    "health": 1,
+    "damage": 1,
+    "reward": 1
     }
 }
 with open(path, "w") as fl:

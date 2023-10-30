@@ -1,6 +1,4 @@
 import json
-import os
-
 
 # Enemies
 path = "main/data/enemy.json"

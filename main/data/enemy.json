@@ -1,20 +1,20 @@
 {
     "1": {
         "name": "Zevaka",
-        "health": 1,
-        "damage": 1,
-        "reward": 1
+        "health": 100,
+        "damage": 20,
+        "reward": 100
     },
     "2": {
         "name": "Gleb",
-        "health": 1,
-        "damage": 1,
-        "reward": 1
+        "health": 250,
+        "damage": 40,
+        "reward": 350
     },
     "3": {
         "name": "MAKAROV",
-        "health": 1,
-        "damage": 1,
-        "reward": 1
+        "health": 1000,
+        "damage": 99,
+        "reward": 1000
     }
 }

@@ -122,7 +122,6 @@ def lose_check(player_health):
 # Main game loop
 playing = True
 while playing:
-    print(player_max_health, player_health)
     round_print(enemy_counter, player_health, player_mana, player_money, enemy_damage, enemy_health, enemies, player_damage)
     player_input = input("-> ")
     random_int = (random.randint(0, 10))

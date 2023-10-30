@@ -1,3 +1,5 @@
 # CritGame
+## This is my first Python project.
 
-This is my first project on Python.
+It started off as a small idea, back when I discovered the **random** lib. I thought of ways to use it, and it came to my mind that I could use it for **random crits**.
+*Should work for a first project*

@@ -19,14 +19,16 @@
     },
     "consumables": {
         "1": {
+            "type": "health",
             "name": "health potion",
             "price": 50,
             "heal": 50
         },
         "2": {
+            "type": "mana",
             "name": "mana potion",
             "price": 50,
-            "mana": 50
+            "heal": 50
         }
     }
 }

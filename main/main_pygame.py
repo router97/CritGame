@@ -9,10 +9,12 @@ pygame.mixer.init()
 
 pygame.display.set_caption("CritGame")
 
-pygame.mixer.music.load("main/data/sounds/weirdpad.mp3")
+pygame.mixer.music.load("main/data/sounds/inspired_synth_loop.wav")
 pygame.mixer.music.play(-1)
 
-hit_sound = pygame.mixer.Sound("main/data/sounds/ultrakill.mp3")
+hit_sound = pygame.mixer.Sound("main/data/sounds/stick.wav")
+death_sound = pygame.mixer.Sound("main/data/sounds/slash perc.wav")
+
 RESOLUTION = (800, 800)
 height = 800
 width = 800
@@ -26,20 +28,6 @@ CYAN = (0,255,255)
 PURPLE = (255,0,255)
 DARK_PURPLE = (128,0,128)
 screen = pygame.display.set_mode(RESOLUTION)
-# smallfont = pygame.font.SysFont('Corbel',35) 
-  
-# text = smallfont.render('quit' , True , WHITE) 
-      
-#     # if mouse is hovered on a button it 
-#     # changes to lighter shade  
-#     if width/2 <= mouse[0] <= width/2+140 and height/2 <= mouse[1] <= height/2+40: 
-#         pygame.draw.rect(screen,WHITE,[width/2,height/2,140,40]) 
-          
-#     else: 
-#         pygame.draw.rect(screen,WHITE,[width/2,height/2,140,40]) 
-      
-#     # superimposing the text onto our button 
-#     screen.blit(text , (width/2+50,height/2)) 
             
 with open("main/data/enemy.json", "r") as fl:
     # Load the JSON data into a dictionary
@@ -86,22 +74,6 @@ enemy_counter = 1
 player_money = 100
 player_input = ''
 
-player_stats = (
-    
-    player_health,
-    player_max_health,
-    player_max_health_base,
-    
-    player_mana,
-    player_max_mana,
-    player_max_mana_base,
-    
-    player_damage,
-    player_damage_base,
-    crit_chance,
-    
-    player_money)
-
 # Functions to handle attacks
 def attack(enemy_health, player_damage):
     """Reduces the enemy's health by the player's damage."""
@@ -127,6 +99,12 @@ def heal(player_stat, player_max_stat, amount):
 
 # Shop functions
 def store_call():
+    for item_type in shop.keys():
+        print(f"\n{item_type}:") 
+        for key in shop[item_type].keys():
+            print(f"\t{key}: {shop[item_type][key]['name']} ({shop[item_type][key]['price']})")
+
+def store_call_menu():
     for item_type in shop.keys():
         print(f"\n{item_type}:") 
         for key in shop[item_type].keys():
@@ -188,12 +166,13 @@ def buy(player_max_health, player_damage, crit_chance, player_health, player_mon
 # Functions to handle round progression
 def win(enemy_counter, enemy_health, enemy_damage, player_money, enemies):
     """Updates enemy stats with the next enemy's stats, if current enemy's health reaches 0 and it isn't the last enemy"""
+    pygame.mixer.Sound.play(death_sound)
     enemy_counter += 1
-    if enemy_counter == 5:
-        pygame.mixer.music.fadeout(1)
-        time.sleep(1)
-        pygame.mixer.music.load("main/data/sounds/Godslaughter_loop.wav")
-        pygame.mixer.music.play(-1)
+    # if enemy_counter == 5:
+    #     pygame.mixer.music.load("main/data/sounds/boss_loop.wav")
+    #     pygame.mixer.music.play(-1)
+    if enemy_counter == 6:
+        enemy_counter = 1
     enemy_stats = enemies[enemy_counter]
     enemy_health, enemy_damage, reward = enemy_stats["health"], enemy_stats["damage"], enemy_stats["reward"]
     player_money += reward
@@ -205,7 +184,7 @@ def lose_check(player_health):
         return True
     return False
 action = 'game start!'
-font_button = pygame.font.SysFont('Corbel',35) 
+font_button = pygame.font.SysFont('Comic Sans',35) 
 text_attack = font_button.render('ATTACK' , True , BLACK) 
 text_store = font_button.render('STORE' , True , BLACK) 
 
@@ -213,7 +192,7 @@ text_store = font_button.render('STORE' , True , BLACK)
 # Main game loop
 open_store = False
 clock = pygame.time.Clock()
-FPS = 60
+FPS = 30
 playing = True
 while playing:
     clock.tick(FPS)
@@ -230,7 +209,7 @@ while playing:
     
     # Enemy health line
     pygame.draw.line(   screen,GREEN, (10,100) , (enemy_health/enemies[enemy_counter]["health"]*200,100), 30   )
-    
+    pygame.draw.line(   screen,GREEN, (100,height-100) , (player_health/player_max_health*240,height-100), 15   )
     # Text
     text_enemy_health = font_button.render(f'{str(enemy_health)}/{str(enemies[enemy_counter]["health"])}' , True , RED) 
     screen.blit(text_enemy_health, (10,120)) # Enemy health / enemy max health
@@ -238,14 +217,14 @@ while playing:
     text_enemy_name = font_button.render(enemies[enemy_counter]["name"], True , RED) 
     screen.blit(text_enemy_name, (10,50)) # Enemy name
     
-    text_player_health = font_button.render(f"{player_health}/{player_max_health}" , True , BLACK) 
-    screen.blit(text_player_health, (width/2+150,height-500)) # Player health
+    text_player_health = font_button.render(f"HP={player_health}/{player_max_health}" , True , BLACK) 
+    screen.blit(text_player_health, (100,height-150)) # Player health / player max health
     
     text_action = font_button.render(f"{action}" , True , BLACK) 
-    screen.blit(text_action, (width/2-100,height-700)) # Last action
+    screen.blit(text_action, (width/2-100,500)) # Last action
     
-    text_money = font_button.render(f"g{player_money}" , True , BLACK) 
-    screen.blit(text_money, (width/2+150,height-550)) # Player money
+    text_money = font_button.render(f"G={player_money}" , True , BLACK) 
+    screen.blit(text_money, (width/2+150,height-150)) # Player money
     
     # Store
     # def store_call():
@@ -255,7 +234,7 @@ while playing:
     #         print(f"\t{key}: {shop[item_type][key]['name']} ({shop[item_type][key]['price']})")
     if open_store:
         pygame.draw.rect(screen,WHITE,[50,height-500,width-100,350]) # STORE MENU
-        store_call()
+        # store_call_menu()
     
     for ev in pygame.event.get(): 
         if ev.type == pygame.QUIT: 
@@ -264,10 +243,14 @@ while playing:
             if width/2+150 <= mouse[0] <= width/2+150+140 and height-100 <= mouse[1] <= height-100+40: 
                 player_input = 'a'
                 pygame.mixer.Sound.play(hit_sound)
-                print(enemy_health)
+                pygame.draw.rect(screen,GREEN,[width/2+150,height-100,140,40]) # rendering attack button
+                screen.blit(text_attack, (width/2+150+10,height-100+4)) # ATTACK text on button
+
             elif width/2-300 <= mouse[0] <= width/2-300+140 and height-100 <= mouse[1] <= height-100+40: 
                 player_input = 's'
                 open_store = not open_store
+                pygame.draw.rect(screen,GREEN,[width/2-300,height-100,140,40]) # rendering store button
+                screen.blit(text_store, (width/2-300+20,height-100+4)) # STORE text on button
 
     # Attacks
     if player_input == 'a':

@@ -25,7 +25,7 @@
     },
     "5": {
         "name": "BOSS TUFORTA",
-        "health": 10000,
+        "health": 1000,
         "damage": 40,
         "reward": 350
     }

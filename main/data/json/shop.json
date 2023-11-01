@@ -1,0 +1,34 @@
+{
+    "equipment": {
+        "1": {
+            "name": "sword",
+            "price": 100,
+            "damage": 9999,
+            "crit": 11
+        },
+        "2": {
+            "name": "armor",
+            "price": 150,
+            "health": 250
+        },
+        "3": {
+            "name": "armor2",
+            "price": 300,
+            "health": 400
+        }
+    },
+    "consumables": {
+        "1": {
+            "type": "health",
+            "name": "health potion",
+            "price": 50,
+            "heal": 50
+        },
+        "2": {
+            "type": "mana",
+            "name": "mana potion",
+            "price": 50,
+            "heal": 50
+        }
+    }
+}

@@ -1,12 +1,8 @@
-player_health = 8000
-player_max_health = 8000
-player_max_health_base = 100
-player_mana = 100
-player_max_mana = 100
-player_max_mana_base = 100
-player_damage = 99
+player_health_base = 9999
+player_mana_base = 9999
 player_damage_base = 99
-crit_chance = 4
+player_crit_chance_base = 4
+player_money_base = 50
+
 enemy_counter = 0
-player_money = 0
 player_input = ''

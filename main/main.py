@@ -7,6 +7,7 @@ import time
 import json
 import pygame
 from data.enemy_class_module import Enemy, EnemyBoss
+from data.player_class_module import Player
 from data.variables import *
 from data.constants import *
 from data.functions import *
@@ -56,6 +57,7 @@ open_store = False
 clock = pygame.time.Clock()
 playing = True
 enemy = enemies[enemy_counter]
+player = Player(player_health_base, player_damage_base, player_crit_chance_base, player_money_base)
 # # #
 
 
@@ -66,7 +68,7 @@ while playing:
     clock.tick(FPS)
     screen.fill(DARK_PURPLE)
     mouse = pygame.mouse.get_pos()
-    player_input = ''
+    player.action = ''
     random_int = (random.randint(0, 10))
     # # #
     
@@ -88,7 +90,7 @@ while playing:
     
     # HEALTH LINE
     pygame.draw.line(screen, GREEN, (10, 100) , (enemy.health/enemy.max_health*200, 100), 30)
-    pygame.draw.line(screen, GREEN, (100, HEIGHT-100) , (player_health/player_max_health*240, HEIGHT-100), 15)
+    pygame.draw.line(screen, GREEN, (100, HEIGHT-100) , (player.health/player.max_health*240, HEIGHT-100), 15)
     # # #
     
     
@@ -99,13 +101,13 @@ while playing:
     text_enemy_name = font_button.render(enemy.name, True , RED)
     screen.blit(text_enemy_name, (10, 50))
     
-    text_player_health = font_button.render(f"HP={player_health}/{player_max_health}", True, BLACK)
+    text_player_health = font_button.render(f"HP={player.health}/{player.max_health}", True, BLACK)
     screen.blit(text_player_health, (100, HEIGHT-150))
     
     text_action = font_button.render(action, True, BLACK)
     screen.blit(text_action, (WIDTH/2-100, 500))
     
-    text_money = font_button.render(f"G={player_money}", True, BLACK)
+    text_money = font_button.render(f"G={player.money}", True, BLACK)
     screen.blit(text_money, (WIDTH/2+150, HEIGHT-150))
     # # #
     
@@ -125,14 +127,14 @@ while playing:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if WIDTH/2+150 <= mouse[0] <= WIDTH/2+150+140 and HEIGHT-100 <= mouse[1] <= HEIGHT-100+40:
                 
-                player_input = 'a'
+                player.action = 'attack'
                 pygame.mixer.Sound.play(hit_sound)
                 pygame.draw.rect(screen, GREEN, [WIDTH/2+150, HEIGHT-100, 140, 40])
                 screen.blit(text_attack, (WIDTH/2+150+10, HEIGHT-100+4))
 
             elif WIDTH/2-300 <= mouse[0] <= WIDTH/2-300+140 and HEIGHT-100 <= mouse[1] <= HEIGHT-100+40:
                 
-                player_input = 's'
+                player.action = 'store'
                 open_store = not open_store
                 pygame.draw.rect(screen, GREEN, [WIDTH/2-300, HEIGHT-100, 140, 40])
                 screen.blit(text_store, (WIDTH/2-300+20, HEIGHT-100+4))
@@ -140,34 +142,37 @@ while playing:
     
     
     # ATTACKS
-    if player_input == 'a':
-        if random_int <= crit_chance:
+    if player.action == 'attack':
+        if random_int <= player.crit_chance:
             action = 'Hit'
-            enemy.health = attack(enemy.health, player_damage)
+            enemy.health = attack(enemy.health, player.damage)
         elif random_int in (5, 6, 7):
             action = 'CRITICAL HIT'
-            enemy.health = crit_attack(enemy.health, player_damage)
+            enemy.health = crit_attack(enemy.health, player.damage)
+    # # #
     
-    elif player_input[0:3] == 'buy':
+    
+    # # #
+    elif player.action[0:3] == 'buy':
         new_values = (buy(player_max_health, player_damage, crit_chance, player_health, player_money, player_max_health_base, player_damage_base))
         player_health, player_max_health, player_mana, player_max_mana, player_damage, crit_chance, player_money = new_values
     # # #
     
     
     # COUNTER ATTACK
-    if random_int >= 8 and player_input not in ('s', ''):
+    if random_int >= 8 and player.action not in ('s', ''):
         action = 'COUNTER ATTACK'
-        player_health = counter_attack(player_health, enemy.damage)
+        player.health = counter_attack(player.health, enemy.damage)
     # # #
     
     
     # ROUND PROGRESSION
-    if lose_check(player_health):
+    if lose_check(player.health):
         action = '--- You lose! ---'
         playing = False
     elif enemy.health <= 0:
         action = '--- You win! ---'
-        enemy_counter, player_money = win(enemy, enemy_counter, player_money, death_sound)
+        player.money, enemy_counter = win(enemy, player, enemy_counter, death_sound)
         if enemy_counter == len(enemies):
             playing = False
         else:
@@ -175,5 +180,9 @@ while playing:
     # # #
     
     
+    # # #
     pygame.display.update()
+    # # #
+    
+    
 # # #

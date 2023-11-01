@@ -15,18 +15,6 @@ def counter_attack(player_health, enemy_damage):
 # # #
 
 
-# Healing
-def heal(player_stat, player_max_stat, amount):
-    if player_stat == player_max_stat:
-        pass
-    elif player_stat >= player_max_stat-amount:
-        player_stat = player_max_stat
-    else:
-        player_stat += amount
-    return player_stat, player_max_stat
-# # #
-
-
 # Shop functions
 def store_call():
     for item_type in shop.keys():
@@ -34,11 +22,6 @@ def store_call():
         for key in shop[item_type].keys():
             print(f"\t{key}: {shop[item_type][key]['name']} ({shop[item_type][key]['price']})")
 
-def store_call_menu():
-    for item_type in shop.keys():
-        print(f"\n{item_type}:") 
-        for key in shop[item_type].keys():
-            print(f"\t{key}: {shop[item_type][key]['name']} ({shop[item_type][key]['price']})")
 
 def buy(player_max_health, player_damage, crit_chance, player_health, player_money, player_max_health_base, player_damage_base, shop, player_input, player_mana, player_max_mana):
     no_money = False
@@ -94,9 +77,9 @@ def buy(player_max_health, player_damage, crit_chance, player_health, player_mon
     return updated_stats
 
 # Functions to handle round progression
-def win(enemy, enemy_counter, player_money, sound):
+def win(enemy, player, enemy_counter, sound):
     pygame.mixer.Sound.play(sound)
-    return enemy_counter+1, player_money+enemy.reward
+    return player.money+enemy.reward, enemy_counter+1
 
 def lose_check(player_health):
     """Returns True if the player's health reaches 0"""
